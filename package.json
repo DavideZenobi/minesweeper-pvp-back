@@ -1,0 +1,20 @@
+{
+  "name": "minesweeper-pvp-back",
+  "version": "1.0.0",
+  "description": "Node server for minesweeperpvp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/DavideZenobi/minesweeper-pvp-back"
+  },
+  "keywords": [
+    "node",
+    "minesweeper",
+    "pvp"
+  ],
+  "author": "Gandar",
+  "license": "ISC"
+}
