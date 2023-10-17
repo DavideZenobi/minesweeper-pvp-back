@@ -1,0 +1,10 @@
+# Dependencias de Node.js
+/node_modules
+
+# Archivos generador por IDEs o editores de texto
+/.vscode
+/.idea
+
+# Archivos de entorno y configuración de base de datos
+.env
+db.js
