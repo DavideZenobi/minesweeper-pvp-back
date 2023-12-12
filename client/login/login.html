@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Minesweeper PvP</title>
+        <link rel="stylesheet" href="login/login.css">
+        <script type="module" src="login/login.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Minesweeper PvP</h1>
+            <form class="form" id="form">
+                <input id="username" type="text" placeholder="Username" required>
+                <p id="exist-error" class="message-error" hidden>User does not exist</p>
+                <input id="password" type="password" placeholder="Password" required>
+                <p id="password-error" class="message-error" hidden>Invalid password</p>
+                <button type="submit" id="login">
+                    Login
+                </button>
+            </form>
+            <button type="submit" id="logout">
+                Logout
+            </button>        
+        </div>
+    </body>
+</html>

@@ -1,0 +1,21 @@
+.container {
+    height: 300px;
+    width: 500px;
+    margin: auto;
+    border: 1px solid black;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}
+
+.message-error {
+    color: red;
+}
