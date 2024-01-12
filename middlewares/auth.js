@@ -1,5 +1,6 @@
 import session from 'express-session';
 import { SessionModel } from '../models/SessionModel.js';
+import { UserModel } from '../models/UserModel.js';
 
 export const AuthMiddleware = async (req, res, next) => {
     
@@ -24,5 +25,15 @@ export const AuthMiddleware = async (req, res, next) => {
 
     } else {
         res.status(401).json({ message: 'User not authenticated'});
+    }
+}
+
+export const checkVerification = async (req, res, next) => {
+    const username = req.body.username;
+    const user = await UserModel.getUserByUsername(username);
+    if (!user) {
+        return res.status(401).json({ message: 'User does not exist' });
+    } else if (user.status) {
+        
     }
 }

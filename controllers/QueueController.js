@@ -4,11 +4,9 @@ export class QueueController {
 
     static join(req, res) {
         let user = req.session.user;
-        user = {...user, status: 'available'};
         const result = Queue.join(user);
 
         if (result) {
-            console.log('Joined Succesfully');
             res.status(200).json({ message: 'Joined queue successfully', queueLength: Queue.playersInQueue.length });
         } else {
             res.status(500).json({ message: 'Error with server' });

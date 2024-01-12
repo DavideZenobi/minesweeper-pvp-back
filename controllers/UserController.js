@@ -1,23 +1,50 @@
 import { UserModel } from "../models/UserModel.js";
 import { hashPassword } from "../utils/password.js";
+import db from "../db.js";
+import { createToken, isTokenValid } from "../services/TokenService.js";
+import { TokenModel } from "../models/TokenModel.js";
+import { sendRegisterMail } from "../mail/mail.js";
 
 
 export class UserController {
 
     static async register(req, res) {
+
+        // Crea el usuario y lo guarda en la BD
         const userToRegister = {
             email: req.body.email,
             username: req.body.username,
             password: await hashPassword(req.body.password),
-            status: 'accepted',
         }
+        const user = await UserModel.create(userToRegister);
 
-        const result = await UserModel.create(userToRegister);
+        // Crea el token para confirmar usuario y lo guarda en la BD
+        const token = createToken();
+        const tokenToSave = {...token, userId: user.id};
 
-        if (result) {
-            return res.status(200).json({ message: 'hello' });
+        const responseToken = await TokenModel.create(tokenToSave);
+
+        sendRegisterMail(req.body.email, responseToken.uuid);
+        return res.status(200).json({ uuid: responseToken.uuid });
+    }
+
+    static async confirmUser(req, res) {
+        const uuid = req.params.uuid;
+        const userId = await TokenModel.getUserIdByUUID(uuid);
+        const isValid = await isTokenValid(uuid);
+        if (isValid) {
+            await UserModel.updateUserStatus('accepted', userId);
+            await TokenModel.delete(uuid);
+            return res.status(200).end();
         } else {
-            return res.status(500).json({ message: 'Couldn\'t create user' });
+            // El token no es válido. El tiempo de expiración ha pasado.
+            await TokenModel.delete(uuid);
+            const email = await UserModel.getEmailByUserId(userId);
+            const token = createToken();
+            const tokenToSave = {...token, userId: userId};
+            const newToken = await TokenModel.create(tokenToSave);
+            sendRegisterMail(email, newToken.uuid);
+            return res.status(401).json({ message: 'Token has expired' });
         }
     }
 

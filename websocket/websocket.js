@@ -1,13 +1,7 @@
 import { Server } from 'socket.io';
 import { ACCEPTED_ORIGINS } from '../middlewares/cors.js';
-import { Queue } from '../matchmaking/Queue.js';
+import { WebSocketsHandler } from './WebSocketsHandler.js';
 import { SessionModel } from '../models/SessionModel.js';
-import { v4 as uuidv4 } from 'uuid';
-import { Room } from './Room.js';
-import { RoomsHandler } from './RoomsHandler.js';
-
-// key: userId | Value: WebSocketIndividual
-const usersAndSockets = new Map();
 
 // Initialize websocket server and config
 export const initializeWebSocket = (server) => {
@@ -21,48 +15,42 @@ export const initializeWebSocket = (server) => {
         },
     });
 
-    io.on('connection', async (socket) => {
+    WebSocketsHandler.init(io);
+
+    io.use(async (socket, next) => {
         const user = await SessionModel.getUserBySessionId(socket.handshake.auth.token);
-        if (!user) {
-            return socket.disconnect();
+        const customSocket = WebSocketsHandler.getSocketByUserId(user.id);
+        if (customSocket) {
+            const error = new Error('Not allowed multiple tabs');
+            next(error);
+        } else {
+            next();
         }
+    });
 
-        usersAndSockets.set(user.id, socket);
+    io.on('connection', async (socket) => {
+        console.log('user connected');
+        const user = await SessionModel.getUserBySessionId(socket.handshake.auth.token);
 
+        socket.use((packet, next) => {
+            packet.splice(1, 0, user);
+            next();
+        });
+
+        socket.on('test', (user, ...data) => {
+            console.log(data);
+        });
+
+        WebSocketsHandler.addSocket(socket);
 
         socket.on('disconnect', () => {
-            usersAndSockets.delete(user.id);
-            socket.removeAllListeners();
-            //Queue.remove(user.id);
+            console.log('disconnected');
+            WebSocketsHandler.deleteSocket(socket);
         });
     });
 
-    // Send how many current players are in queue every 5 seconds
-    const updatePlayersInQueue = () => {
-        io.emit('update-players-queue', { playersInQueue: Queue.playersInQueue.length });
-    }
-    const updatePlayersInQueueIntervalId = setInterval(updatePlayersInQueue, 5 * 1000);
 
-    // Find match
-    const tryToMatch = () => {
-        console.log(Queue.getAvailablePlayersLength());
-        const players = Queue.findMatch();
-        if (players) {
-            const uuid = uuidv4();
-            const playersAndSockets = new Array();
-            
-            players.forEach(player => {
-                const socketByPlayer = usersAndSockets.get(player.id);
-                playersAndSockets.push({userId: player.id, username: player.username, socket: socketByPlayer});
-            });
-
-            const newRoom = new Room(io, uuid, playersAndSockets);
-            newRoom.initializeListeners();
-            RoomsHandler.addRoom(newRoom);
-        }
-    }
-    const tryToMatchIntervalId = setInterval(tryToMatch, 5 * 1000);
-
+    return io;
 }
 
 

@@ -1,10 +1,12 @@
+import { SseManager } from "../sse/SseManager.js";
 
 
 export class Queue {
 
-    static playersInQueue = [];
+    static playersInQueue = []; // {userId, username, status}
 
     static join(user) {
+        user = {...user, status: 'available'};
         this.playersInQueue.push(user);
         const checkPushedUser = this.playersInQueue.some(player => player.id === user.id);
         if (checkPushedUser) {
@@ -23,6 +25,7 @@ export class Queue {
         const removedUser = this.playersInQueue.find(player => player.id === userId);
         if (removedUser) {
             this.playersInQueue = this.playersInQueue.filter(player => player.id !== userId);
+            SseManager.sendEvent(userId, 'user-left-queue', { message: 'OK' });''
             return removedUser;
         } else {
             return null;
