@@ -1,6 +1,7 @@
 import { minesweeperconfigs } from "../utils/minesweeperconfigs.js";
 import { GamePvP } from "./GamePvP.js";
 import { SseManager } from '../sse/SseManager.js';
+import dayjs from "dayjs";
 
 const userStatusEnum = {
     waitingToConnect: 'waitingToConnect',
@@ -26,15 +27,19 @@ export class GamePvPRoom {
     level;
     config;
     neededWins;
+    winnerUsername;
     currentGameNumber;
     timerToStart;
     timerToStartIntervalId;
     timerToNextGame;
     timerToNextGameIntervalId;
     timeUpdaterIntervalId;
+    datetimeMatchStarted;
+    datetimeMatchFinished;
 
     constructor(matchId, players) {
         this.matchId = matchId;
+        this.status = 'running';
         this.level = 'hard';
         this.config = minesweeperconfigs[this.level];
         this.neededWins = matchTypeEnum.bo3;
@@ -50,6 +55,7 @@ export class GamePvPRoom {
                 results: new Array(),
             });
         });
+        this.datetimeMatchStarted = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
     }
 
@@ -170,6 +176,7 @@ export class GamePvPRoom {
             dataToSend.push(newDataToSend);
 
             if (userGame.wins === this.neededWins) {
+                this.winnerUsername = userGame.user.username;
                 isMatchFinished = true;
             }
         });
@@ -203,6 +210,7 @@ export class GamePvPRoom {
     processMatchFinished() {
         this.stopTimeUpdater();
         this.status = 'finished';
+        this.datetimeMatchFinished = dayjs().format('YYYY-MM-DD HH:mm:ss');
         this.usersGames.forEach(userGame => {
             SseManager.sendEvent(userGame.user.id, 'match-finished');
         });

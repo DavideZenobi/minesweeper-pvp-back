@@ -6,6 +6,7 @@ import { sseRouter } from "./SseRoutes.js";
 import { gameRouter } from "./GameRoutes.js";
 import { matchmakingRouter } from "./MatchmakingRoutes.js";
 import { matchRouter } from "./MatchRoutes.js";
+import { gamePveRouter } from "./GamePvERoutes.js";
 
 export const protectedApiRouter = Router();
 
@@ -15,5 +16,6 @@ protectedApiRouter.use('/sse', sseRouter);
 protectedApiRouter.use('/match', matchRouter);
 protectedApiRouter.use('/matchmaking', matchmakingRouter);
 protectedApiRouter.use('/game', gameRouter);
+protectedApiRouter.use('/gamepve', gamePveRouter);
 protectedApiRouter.use('/queue', queueRouter);
 protectedApiRouter.use('/room', roomsRouter);

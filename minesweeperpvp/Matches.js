@@ -1,8 +1,14 @@
+import { saveMatchesAndGames } from "../services/MatchPvPService.js";
 
 
 export class Matches {
 
     static matches = new Array(); // [{id, [players], gameRoom}]
+    static intervalId;
+
+    static init() {
+        this.intervalId = setInterval(() => this.processFinishedMatches(), 10 * 1000);
+    }
 
     static addMatch(matchId, players, gameRoom) {
         this.matches.push({
@@ -18,6 +24,14 @@ export class Matches {
 
     static getGameRoom(matchId) {
         return this.matches.find(match => match.id === matchId).gameRoom;
+    }
+
+    static processFinishedMatches() {
+        const finishedMatches = this.matches.filter(match => match.gameRoom.status === 'finished');
+        if (finishedMatches.length > 0) {
+            this.matches = this.matches.filter(match => match.gameRoom.status === 'running');
+            saveMatchesAndGames(finishedMatches);
+        }
     }
 
     static validateMatch(matchId) {

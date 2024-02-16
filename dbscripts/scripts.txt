@@ -1,0 +1,24 @@
+CREATE TABLE match_pvp (
+    uuid varchar(40) NOT NULL,
+    players varchar(20) NOT NULL,
+    total_games int NOT NULL,
+    winner_username varchar(20) NOT NULL,
+    datetime_started Datetime NOT NULL,
+    datetime_finished Datetime NOT NULL,
+    PRIMARY KEY (uuid)
+);
+
+CREATE TABLE game_pvp (
+    match_pvp_id VARCHAR(40) NOT NULL,
+    user_id INT NOT NULL,
+    game_number INT NOT NULL,
+    cells VARCHAR(20) NOT NULL,
+    level VARCHAR(10) NOT NULL,
+    score INT NOT NULL,
+    time INT NOT NULL,
+    datetime_started DATETIME NOT NULL,
+    datetime_finished DATETIME NOT NULL,
+    PRIMARY KEY (match_pvp_id, user_id, game_number),
+    FOREIGN KEY (match_pvp_id) REFERENCES match_pvp(uuid),
+    FOREIGN KEY (user_id) REFERENCES user(id)
+);

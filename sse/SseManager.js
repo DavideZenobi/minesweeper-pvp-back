@@ -1,3 +1,4 @@
+import { MatchesPvE } from "../minesweeper/MatchesPvE.js";
 
 
 export class SseManager {
@@ -23,6 +24,6 @@ export class SseManager {
     }
 
     static cleanBeforeDelete(userId) {
-
+        MatchesPvE.deleteMatch(userId);
     }
 }

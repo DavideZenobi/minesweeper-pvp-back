@@ -18,7 +18,7 @@ export const sendRegisterMail = async (to, token) => {
         to: to,
         subject: 'Confirm register',
         html: `
-            <p>Click this link to confirm email. ${token}</p>
+            <p>Click this link to confirm email. <a href="http://localhost:3001/confirm/${token}">localhost:3001/confirm/${token}</a></p>
         `,
     }
 

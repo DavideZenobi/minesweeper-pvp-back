@@ -1,13 +1,12 @@
 import { CORRECT_FLAGGED_CELL_SCORE, OPEN_CELL_SCORE, calculateTimeMultiplier } from "../utils/ScoreConstants.js";
-import { minesweeperconfigs } from './minesweeperconfigs.js';
+import { minesweeperconfigs } from '../utils/minesweeperconfigs.js';
 
 const statusEnum = {
     finished: 'finished',
 
 }
 
-export class GamePvESolo {
-    gameId; // uuid
+export class GamePvE {
     level; // easy, medium, hard
     config;
     cells; // {isMine, isOpen, isFlagged, neighborMines, position: {rowIndex, colIndex} }
@@ -15,16 +14,14 @@ export class GamePvESolo {
     cellsToSend;
     timeIntervalId;
     time;
-    timeToMoveIntervalId;
-    timeToMove;
     visitedBlankCells;
     hasFinished;
     score;
     status; // win or lose
 
-    constructor() {
+    constructor(level = 'easy') {
         //this.gameId = uuid;
-        this.level = 'easy';
+        this.level = level;
         this.config = minesweeperconfigs[this.level];
         this.cells = 
             Array.from({ length: this.config.squaresPerHeight }, (_unused, rowIndex) => 
@@ -234,6 +231,13 @@ export class GamePvESolo {
         }
     }
 
+    forceFinish() {
+        this.hasFinished = true;
+        this.status = 'lost';
+        this.stopTimers();
+        this.processScore();
+    }
+
     addCellToCellsToSend(cell) {
         let needToPush = true;
 
@@ -288,22 +292,11 @@ export class GamePvESolo {
         this.timeIntervalId = setInterval(() => {
             this.time++;
         }, 1 * 1000);
-
-        this.timeToMoveIntervalId = setInterval(() => {
-            this.timeToMove--;
-            if (this.timeToMove === 0) {
-
-            }
-        }, 1 * 1000);
     }
 
     stopTimers() {
         if (this.timeIntervalId) {
             clearInterval(this.timeIntervalId);
-        }
-        
-        if (this.timeToMoveIntervalId) {
-            clearInterval(this.timeToMoveIntervalId);
         }
     }   
 }

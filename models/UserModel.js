@@ -22,6 +22,12 @@ export class UserModel {
         return user[0];
     }
 
+    static async getUsernameById(id) {
+        const [user, columns] = await db.execute('SELECT username FROM user WHERE id = ?', [id]);
+
+        return user[0].username;
+    }
+
     static async delete() {
 
     }

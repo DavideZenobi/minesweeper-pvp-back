@@ -1,3 +1,4 @@
+import { TokenModel } from "../models/TokenModel.js";
 import { UserModel } from "../models/UserModel.js"
 
 
@@ -27,6 +28,19 @@ export const verifyUserExistence = async (req, res, next) => {
 // 
 export const verifyCookie = (req, res, next) => {
 
+}
+
+/**
+ * Middleware usado para controlar si el token pasado existe
+ */
+export const tokenExists = async (req, res, next) => {
+    const uuid = req.params.uuid;
+    const token = await TokenModel.getByUUID(uuid);
+    if (token === undefined) {
+        return res.status(404).end();
+    }
+
+    next();
 }
 
 export const verifyUsernameAndEmailAvailability = async (req, res, next) => {

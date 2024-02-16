@@ -10,6 +10,7 @@ import { AuthMiddleware } from './middlewares/auth.js';
 import { UserModel } from './models/UserModel.js';
 import { sessionStore } from './db.js';
 import { MatchmakingHandler } from './matchmaking/MatchmakingHandler.js';
+import { Matches } from './minesweeperpvp/Matches.js';
 
 
 // Server config
@@ -39,6 +40,7 @@ app.use(session({
 }));
 
 MatchmakingHandler.init();
+Matches.init();
 
 // Public API routes
 app.use('/api/public', publicApiRouter);

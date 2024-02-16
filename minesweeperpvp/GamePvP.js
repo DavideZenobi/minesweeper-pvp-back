@@ -15,8 +15,6 @@ export class GamePvP {
     startTimestamp;
     finishTimestamp;
     totalTime;
-    timeToMove;
-    timeToMoveIntervalId;
     visitedBlankCells;
     hasFinished;
     score;
@@ -43,7 +41,6 @@ export class GamePvP {
         this.minesLeft = this.config.minesQuantity;
         this.alreadyFirstClicked = false;
         this.cellsToSend = new Array();
-        this.timeToMove = 30;
         this.visitedBlankCells = new Array();
         this.hasFinished = false;
         this.score = 0;
@@ -54,7 +51,6 @@ export class GamePvP {
             if (this.alreadyFirstClicked) {
                 this.openCell(position);
                 this.checkBlankCell(position);
-                this.timeToMove = 30;
             } else {
                 this.handleFirstLeftClick(position);
                 this.alreadyFirstClicked = true;
