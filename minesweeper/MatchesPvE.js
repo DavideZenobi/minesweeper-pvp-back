@@ -1,5 +1,3 @@
-
-
 export class MatchesPvE {
 
     static matches = new Array(); //[{player: {username, id}, gameRoom}]
@@ -12,7 +10,12 @@ export class MatchesPvE {
     }
 
     static deleteMatch(userId) {
-        this.matches = this.matches.filter(match => match.player.id !== userId);
+        const match = this.matches.find(match => match.player.id === userId);
+        if (match) {
+            match.gameRoom.stopTimer();
+            match.gameRoom.gamePve.stopTimer();
+            this.matches = this.matches.filter(match => match.player.id !== userId);
+        }
     }
 
     static getGameRoomByUserId(userId) {

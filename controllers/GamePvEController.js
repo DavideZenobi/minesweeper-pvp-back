@@ -28,7 +28,10 @@ export class GamePvEController {
     }
 
     static async reset(req, res) {
-
+        const user = req.session.user;
+        const gameRoom = MatchesPvE.getGameRoomByUserId(user.id);
+        gameRoom.handleReset();
+        return res.status(200).end();
     }
 
     static async levelChange(req, res) {
@@ -36,6 +39,8 @@ export class GamePvEController {
         const level = req.body.level;
         const gameRoom = MatchesPvE.getGameRoomByUserId(user.id);
         gameRoom.handleLevelChange(level);
+        return res.status(200).end();
+        
     }
 
     static async delete(req, res) {

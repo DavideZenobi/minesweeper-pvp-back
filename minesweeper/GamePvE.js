@@ -41,7 +41,6 @@ export class GamePvE {
         this.alreadyFirstClicked = false;
         this.cellsToSend = new Array();
         this.time = 0;
-        this.timeToMove = 30;
         this.visitedBlankCells = new Array();
         this.hasFinished = false;
         this.score = 0;
@@ -54,7 +53,6 @@ export class GamePvE {
                 if (this.alreadyFirstClicked) {
                     this.openCell(position);
                     this.checkBlankCell(position);
-                    this.timeToMove = 30;
                 } else {
                     this.handleFirstLeftClick(position);
                     this.alreadyFirstClicked = true;
@@ -79,7 +77,7 @@ export class GamePvE {
         this.countNeighborMines();
         this.modifyCellsToSend();
         this.checkBlankCell(position);
-        this.startTimers();
+        this.startTimer();
     }
 
     reset() {
@@ -101,12 +99,11 @@ export class GamePvE {
             );
         this.alreadyFirstClicked = false;
         this.cellsToSend = new Array();
-        this.stopTimers();
+        this.stopTimer();
         this.timeIntervalId = null;
         this.time = 0;
-        this.timeToMoveIntervalId = null;
-        this.timeToMove = 30;
         this.visitedBlankCells = new Array();
+        this.hasFinished = false;
         this.score = 0;
         this.status = '';
     }
@@ -220,12 +217,12 @@ export class GamePvE {
         
         if (isLost) {
             this.hasFinished = true;
-            this.stopTimers();
+            this.stopTimer();
             this.status = 'lost';
             this.processScore();
         } else if (isWon) {
             this.hasFinished = true;
-            this.stopTimers();
+            this.stopTimer();
             this.status = 'won';
             this.processScore();
         }
@@ -234,7 +231,7 @@ export class GamePvE {
     forceFinish() {
         this.hasFinished = true;
         this.status = 'lost';
-        this.stopTimers();
+        this.stopTimer();
         this.processScore();
     }
 
@@ -288,13 +285,14 @@ export class GamePvE {
         this.score = Math.ceil(score);
     }
 
-    startTimers() {
+    startTimer() {
         this.timeIntervalId = setInterval(() => {
             this.time++;
+            console.log(this.time);
         }, 1 * 1000);
     }
 
-    stopTimers() {
+    stopTimer() {
         if (this.timeIntervalId) {
             clearInterval(this.timeIntervalId);
         }

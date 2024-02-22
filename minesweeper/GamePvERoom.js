@@ -8,22 +8,19 @@ export class GamePvERoom {
     gamePve;
     timeToMove;
     timeToMoveIntervalId;
-    started;
 
     constructor(player) {
         this.player = player;
         this.gamePve = new GamePvE();
         this.timeToMove = 30;
-        this.started = false;
     }
 
     handleLeftClick(position) {
+        this.gamePve.handleLeftClick(position);
         if (!this.timeToMoveIntervalId) {
             this.startTimer();
         }
-
-        this.gamePve.handleLeftClick(position);
-        this.started = true;
+        this.timeToMove = 30;
         const cellsToSend = this.gamePve.cellsToSend;
         this.gamePve.resetCellsToSend();
         return cellsToSend;
@@ -37,15 +34,22 @@ export class GamePvERoom {
     }
 
     handleReset() {
-
+        this.stopTimer();
+        this.timeToMoveIntervalId = null;
+        this.timeToMove = 30;
+        this.gamePve.reset();
     }
 
     handleLevelChange(level) {
-        this.gamePve = new GamePvE(level);
+        this.stopTimer();
+        this.timeToMoveIntervalId = null;
+        this.timeToMove = 30;
+        this.gamePve.changeLevel(level);
     }
 
     hasGameFinished() {
         if (this.gamePve.hasFinished) {
+            this.stopTimer();
             const data = {
                 status: this.gamePve.status,
                 score: this.gamePve.score,
@@ -62,6 +66,7 @@ export class GamePvERoom {
             score: this.gamePve.score,
             time: this.gamePve.time,
         }
+        this.stopTimer();
         SseManager.sendEvent(this.player.id, 'lost-by-time', data);
     }
 
@@ -70,8 +75,14 @@ export class GamePvERoom {
             this.timeToMove--;
             if (this.timeToMove === 0) {
                 this.finishGameByTimeToMove();
-                clearInterval(this.timeToMoveIntervalId);
+                this.stopTimer();
             }
         }, 1 * 1000);
     }
+
+    stopTimer() {
+        clearInterval(this.timeToMoveIntervalId);
+    }
+
+    
 }

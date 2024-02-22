@@ -14,8 +14,8 @@ export const minesweeperconfigs = {
         height: 500,
     },
     hard: {
-        squaresPerWidth: 26,
-        squaresPerHeight: 26,
+        squaresPerWidth: 30,
+        squaresPerHeight: 20,
         minesQuantity: 95,
         width: 650,
         height: 650,
