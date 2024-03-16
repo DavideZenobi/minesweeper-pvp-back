@@ -12,7 +12,7 @@ export class GameController {
             const gameRoom = Matches.getGameRoom(matchId);
             const data = gameRoom.handleLeftClick(user.id, position);
             if (data) {
-                res.status(200).json({ data: data });
+                res.status(200).json(data);
                 gameRoom.sendUpdatedCellsToOpponent(user.id);
                 gameRoom.hasFinishedGame(user.id);
             } else {
@@ -32,7 +32,7 @@ export class GameController {
             const gameRoom = Matches.getGameRoom(matchId);
             const data = gameRoom.handleRightClick(user.id, position);
             if (data) {
-                res.status(200).json({ data: data });
+                res.status(200).json(data);
                 gameRoom.sendUpdatedCellsToOpponent(user.id);
             } else {
                 return res.status(403).json({ error: 'Game not started yet' });

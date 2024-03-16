@@ -1,16 +1,16 @@
-import { SseManager } from "../sse/SseManager.js";
+import { SseOfflineManager } from "../sse/SseOfflineManager.js";
 import { GamePvE } from "./GamePvE.js";
 
 
-export class GamePvERoom {
+export class GamePvEOfflineRoom {
 
-    player;
+    matchId;
     gamePve;
     timeToMove;
     timeToMoveIntervalId;
 
-    constructor(player) {
-        this.player = player;
+    constructor(matchId) {
+        this.matchId = matchId;
         this.gamePve = new GamePvE();
         this.timeToMove = 30;
     }
@@ -47,6 +47,8 @@ export class GamePvERoom {
         this.gamePve.changeLevel(level);
     }
 
+    /**************************************************/
+
     hasGameFinished() {
         if (this.gamePve.hasFinished) {
             this.stopTimer();
@@ -55,7 +57,9 @@ export class GamePvERoom {
                 score: this.gamePve.score,
                 time: this.gamePve.time,
             }
-            SseManager.sendEvent(this.player.id, 'game-finished', data);
+            //SseManager.sendEvent(this.player.id, 'game-finished', data);
+
+            SseOfflineManager.sendEvent(this.matchId, 'game-finished', data);
         }
     }
 
@@ -67,7 +71,9 @@ export class GamePvERoom {
             time: this.gamePve.time,
         }
         this.stopTimer();
-        SseManager.sendEvent(this.player.id, 'lost-by-time', data);
+        //SseManager.sendEvent(this.player.id, 'lost-by-time', data);
+
+        SseOfflineManager.sendEvent(this.matchId, 'lost-by-time', data);
     }
 
     startTimer() {

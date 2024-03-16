@@ -231,9 +231,9 @@ export class GamePvPRoom {
 
     // {status, userStatus, currentGame, time, timeToMove, cells, }
     getInfoForReconnectedUser(userId) {
-        const usernames = new Array();
+        const users = new Array();
         this.usersGames.forEach(userGame => {
-            usernames.push(userGame.user.username);
+            users.push({username: userGame.user.username, wins: userGame.wins});
         });
 
         const userGame = this.getCurrentUserGameByUser(userId);
@@ -242,13 +242,13 @@ export class GamePvPRoom {
         switch (userGame.status) {
             case userStatusEnum.readyToStart:
                 dataToSend = {
-                    usernames: usernames,
+                    users: users,
                     userStatus: userGame.status,
                 }
                 break;
             case userStatusEnum.starting:
                 dataToSend = {
-                    usernames: usernames,
+                    users: users,
                     userStatus: userGame.status,
                     currentGame: this.currentGameNumber,
                     timeToStart: this.timerToStart,
@@ -256,7 +256,7 @@ export class GamePvPRoom {
                 break;
             case userStatusEnum.running:
                 dataToSend = {
-                    usernames: usernames,
+                    users: users,
                     userStatus: userGame.status,
                     currentGame: this.currentGameNumber,
                     cells: userGame.games[this.currentGameNumber - 1].cellsToSend,
@@ -267,7 +267,7 @@ export class GamePvPRoom {
                 break;
             case userStatusEnum.waiting:
                 dataToSend = {
-                    usernames: usernames,
+                    users: users,
                     userStatus: userGame.status,
                     currentGame: this.currentGameNumber,
                     cells: userGame.games[this.currentGameNumber - 1].cellsToSend,
@@ -289,7 +289,7 @@ export class GamePvPRoom {
                 });
                 
                 dataToSend = {
-                    usernames: usernames,
+                    users: users,
                     userStatus: userGame.status,
                     currentGame: this.currentGameNumber,
                     cells: userGame.games[this.currentGameNumber - 1].cellsToSend,

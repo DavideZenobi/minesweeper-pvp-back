@@ -19,8 +19,10 @@ export class SseManager {
 
     static sendEvent(userId, event, data) {
         const emitter = this.getEmitter(userId);
-        emitter.write(`event: ${event}\n`);
-        emitter.write(`data: ${JSON.stringify(data)}\n\n`);
+        if (emitter) {
+            emitter.write(`event: ${event}\n`);
+            emitter.write(`data: ${JSON.stringify(data)}\n\n`);
+        }
     }
 
     static cleanBeforeDelete(userId) {
