@@ -7,4 +7,3 @@
 
 # Archivos de entorno y configuración de base de datos
 .env
-db.js
