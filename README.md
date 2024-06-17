@@ -1,5 +1,9 @@
 # MinesweeperPvP
 
+> [!CAUTION]
+> **_Can't play anymore_**
+>
+
 Minesweeper PvP is a website where you can play minesweeper alone or against other players.
 This website is a personal project to expand my knowledge of react and node.js. [Play now](https://www.minesweeperpvp.online).
 <br></br>
